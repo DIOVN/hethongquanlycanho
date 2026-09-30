@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* === SAMS Global Design System === */
+
+@layer base {
+  :root {
+    /* Scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
+  }
+
+  body {
+    @apply font-sans antialiased text-slate-800 bg-surface-50;
+  }
+
+  /* Focus rings chuẩn a11y */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary-500;
+  }
+}
+
+@layer components {
+  /* === Buttons === */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2
+           px-4 py-2 text-sm font-medium rounded-xl
+           transition-all duration-150 ease-in-out
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-primary-600 text-white
+           hover:bg-primary-700 active:bg-primary-800
+           shadow-sm hover:shadow-card-hover;
+  }
+  .btn-secondary {
+    @apply btn bg-white text-slate-700 border border-slate-200
+           hover:bg-slate-50 hover:border-slate-300 shadow-card;
+  }
+  .btn-danger {
+    @apply btn bg-danger-500 text-white
+           hover:bg-danger-700 active:bg-danger-700;
+  }
+
+  /* === Cards === */
+  .card {
+    @apply bg-white rounded-2xl shadow-card border border-slate-100 p-5;
+  }
+  .card-hover {
+    @apply card transition-shadow duration-200 hover:shadow-card-hover;
+  }
+
+  /* === Form Inputs === */
+  .input {
+    @apply w-full px-3 py-2 text-sm border border-slate-200 rounded-xl
+           bg-white placeholder:text-slate-400
+           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+           transition-all duration-150;
+  }
+  .input-error {
+    @apply border-danger-500 focus:ring-danger-400;
+  }
+  .label {
+    @apply block text-sm font-medium text-slate-700 mb-1.5;
+  }
+
+  /* === Badges === */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5
+           text-xs font-semibold rounded-full;
+  }
+  .badge-success { @apply badge bg-success-50 text-success-700; }
+  .badge-warning { @apply badge bg-warning-50 text-warning-700; }
+  .badge-danger  { @apply badge bg-danger-50 text-danger-700; }
+  .badge-primary { @apply badge bg-primary-50 text-primary-700; }
+  .badge-neutral { @apply badge bg-slate-100 text-slate-600; }
+
+  /* === Status Badges (Room & Invoice) === */
+  .status-vacant     { @apply badge-success; }
+  .status-occupied   { @apply badge-primary; }
+  .status-maintenance{ @apply badge-warning; }
+  .status-unpaid     { @apply badge-warning; }
+  .status-paid       { @apply badge-success; }
+  .status-overdue    { @apply badge-danger; }
+
+  /* === Table === */
+  .table-wrapper {
+    @apply overflow-x-auto rounded-xl border border-slate-100;
+  }
+  .table {
+    @apply w-full text-sm text-left text-slate-700;
+  }
+  .table thead tr {
+    @apply bg-slate-50 text-slate-500 text-xs uppercase tracking-wide;
+  }
+  .table th, .table td {
+    @apply px-4 py-3;
+  }
+  .table tbody tr {
+    @apply border-t border-slate-100 hover:bg-slate-50 transition-colors duration-100;
+  }
+
+  /* === Sidebar nav item === */
+  .nav-item {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
+           text-slate-600 hover:bg-primary-50 hover:text-primary-700
+           transition-all duration-150 cursor-pointer;
+  }
+  .nav-item.active {
+    @apply bg-primary-50 text-primary-700 font-semibold;
+  }
+
+  /* === Loading spinner === */
+  .spinner {
+    @apply w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin;
+  }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .transition-fast { @apply transition-all duration-100; }
+  .transition-smooth { @apply transition-all duration-200 ease-in-out; }
+}
