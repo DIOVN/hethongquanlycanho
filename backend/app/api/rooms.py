@@ -137,3 +137,122 @@ def list_all_rooms():
         [r.to_dict(include_building=True) for r in rooms],
         page, per_page, total,
     )
+
+
+@rooms_bp.get("/buildings")
+@authenticated_required
+def list_buildings():
+    """
+    GET /api/v1/rooms/buildings
+    Lấy danh sách các tòa nhà căn hộ đang quản lý.
+    """
+    buildings = Building.query.order_by(Building.name.asc()).all()
+    return success_response([b.to_dict() for b in buildings])
+
+
+@rooms_bp.post("")
+@landlord_required
+def create_room():
+    """
+    POST /api/v1/rooms
+    Tạo phòng trọ / căn hộ mới.
+    """
+    data = request.get_json(silent=True) or {}
+    room_number = str(data.get("room_number", "")).strip()
+    building_id = data.get("building_id")
+    base_price = data.get("base_price")
+
+    if not room_number:
+        return error_response("MISSING_ROOM_NUMBER", "Số phòng là bắt buộc.", 422)
+    if not building_id:
+        return error_response("MISSING_BUILDING_ID", "Tòa nhà là bắt buộc.", 422)
+    if base_price is None or float(base_price) <= 0:
+        return error_response("INVALID_BASE_PRICE", "Giá phòng cơ bản phải lớn hơn 0.", 422)
+
+    building = db.session.get(Building, int(building_id))
+    if not building:
+        return error_response("BUILDING_NOT_FOUND", "Tòa nhà không tồn tại.", 404)
+
+    # Kiểm tra trùng số phòng trong cùng tòa nhà
+    existing = Room.query.filter_by(building_id=building.id, room_number=room_number).first()
+    if existing:
+        return error_response("ROOM_ALREADY_EXISTS", f"Phòng {room_number} đã tồn tại trong {building.name}.", 409)
+
+    new_room = Room(
+        building_id=building.id,
+        room_number=room_number,
+        floor=int(data.get("floor", 1)) if data.get("floor") else None,
+        base_price=float(base_price),
+        area_sqm=float(data.get("area_sqm", 25.0)) if data.get("area_sqm") else None,
+        status=data.get("status", "vacant"),
+        has_balcony=bool(data.get("has_balcony", False)),
+        has_washing_machine=bool(data.get("has_washing_machine", False)),
+        has_kitchen=bool(data.get("has_kitchen", False)),
+        has_parking=bool(data.get("has_parking", False)),
+        description=data.get("description", ""),
+    )
+
+    db.session.add(new_room)
+    db.session.commit()
+
+    return success_response(new_room.to_dict(include_building=True), message="Tạo phòng thành công!", status_code=201)
+
+
+@rooms_bp.put("/<int:room_id>")
+@landlord_required
+def update_room(room_id: int):
+    """
+    PUT /api/v1/rooms/:room_id
+    Cập nhật toàn diện thông tin phòng.
+    """
+    room = db.session.get(Room, room_id)
+    if not room:
+        return error_response("ROOM_NOT_FOUND", f"Phòng #{room_id} không tồn tại.", 404)
+
+    data = request.get_json(silent=True) or {}
+    if "room_number" in data:
+        room.room_number = str(data["room_number"]).strip()
+    if "floor" in data and data["floor"] is not None:
+        room.floor = int(data["floor"])
+    if "base_price" in data and data["base_price"] is not None:
+        room.base_price = float(data["base_price"])
+    if "area_sqm" in data and data["area_sqm"] is not None:
+        room.area_sqm = float(data["area_sqm"])
+    if "status" in data and data["status"] in ["vacant", "occupied", "maintenance"]:
+        room.status = data["status"]
+    if "has_balcony" in data:
+        room.has_balcony = bool(data["has_balcony"])
+    if "has_washing_machine" in data:
+        room.has_washing_machine = bool(data["has_washing_machine"])
+    if "has_kitchen" in data:
+        room.has_kitchen = bool(data["has_kitchen"])
+    if "has_parking" in data:
+        room.has_parking = bool(data["has_parking"])
+    if "description" in data:
+        room.description = data["description"]
+    if "current_tenant_id" in data:
+        room.current_tenant_id = int(data["current_tenant_id"]) if data["current_tenant_id"] else None
+
+    db.session.commit()
+    return success_response(room.to_dict(include_building=True), message="Cập nhật phòng thành công!")
+
+
+@rooms_bp.patch("/<int:room_id>/status")
+@landlord_required
+def patch_room_status(room_id: int):
+    """
+    PATCH /api/v1/rooms/:room_id/status
+    Đổi nhanh trạng thái phòng (vacant, occupied, maintenance).
+    """
+    room = db.session.get(Room, room_id)
+    if not room:
+        return error_response("ROOM_NOT_FOUND", f"Phòng #{room_id} không tồn tại.", 404)
+
+    data = request.get_json(silent=True) or {}
+    new_status = data.get("status")
+    if new_status not in ["vacant", "occupied", "maintenance"]:
+        return error_response("INVALID_STATUS", "Trạng thái hợp lệ: vacant, occupied, maintenance.", 400)
+
+    room.status = new_status
+    db.session.commit()
+    return success_response(room.to_dict(include_building=True), message=f"Đã chuyển trạng thái sang {new_status}!")

@@ -977,3 +977,50 @@ Public endpoint.
 }
 ```
 ---
+
+
+## 5. Endpoints Tự Động Đồng Bộ Từ Backend Code
+
+#### `GET` /api/v1/buildings
+- **Tên hàm Backend:** `list_buildings()` (tại `rooms.py:144`)
+- **Mô tả:** GET /api/v1/rooms/buildings
+- **Quyền truy cập:** `Public`
+- **Phương thức hỗ trợ:** `GET`
+
+**Chi tiết nghiệp vụ:**
+```text
+Lấy danh sách các tòa nhà căn hộ đang quản lý.
+```
+
+- **Response Chuẩn:**
+```json
+{
+  "success": true,
+  "data": {},
+  "meta": { "timestamp": "2026-10-01T12:00:00Z" },
+  "error": null
+}
+```
+---
+#### `PATCH` /api/v1/<int:room_id>/status
+- **Tên hàm Backend:** `patch_room_status()` (tại `rooms.py:242`)
+- **Mô tả:** PATCH /api/v1/rooms/:room_id/status
+- **Quyền truy cập:** `Landlord`
+- **Phương thức hỗ trợ:** `PATCH`
+- **Tham số đường dẫn (Path Params):** `room_id`
+
+**Chi tiết nghiệp vụ:**
+```text
+Đổi nhanh trạng thái phòng (vacant, occupied, maintenance).
+```
+
+- **Response Chuẩn:**
+```json
+{
+  "success": true,
+  "data": {},
+  "meta": { "timestamp": "2026-10-01T12:00:00Z" },
+  "error": null
+}
+```
+---

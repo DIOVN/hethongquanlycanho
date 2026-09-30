@@ -35,6 +35,26 @@ export const roomService = {
     const res = await apiClient.patch(`/roommates/${roommateId}/status`, { status })
     return res.data.data
   },
+
+  getBuildings: async () => {
+    const res = await apiClient.get('/rooms/buildings')
+    return res.data.data
+  },
+
+  createRoom: async (data) => {
+    const res = await apiClient.post('/rooms', data)
+    return res.data.data
+  },
+
+  updateRoom: async (id, data) => {
+    const res = await apiClient.put(`/rooms/${id}`, data)
+    return res.data.data
+  },
+
+  updateRoomStatus: async (id, status) => {
+    const res = await apiClient.patch(`/rooms/${id}/status`, { status })
+    return res.data.data
+  },
 }
 
 export default roomService

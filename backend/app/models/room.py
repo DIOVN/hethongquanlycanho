@@ -117,6 +117,10 @@ class Room(db.Model):
         if include_building and self.building:
             result["building_name"] = self.building.name
             result["address"] = self.building.address
+        if self.current_tenant:
+            result["current_tenant_name"] = self.current_tenant.full_name
+            result["current_tenant_phone"] = self.current_tenant.phone
+            result["current_tenant_email"] = self.current_tenant.email
         return result
 
     def __repr__(self) -> str:
