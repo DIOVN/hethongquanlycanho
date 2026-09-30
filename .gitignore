@@ -1,0 +1,67 @@
+# ==========================================
+# SAMS Project .gitignore
+# ==========================================
+
+# --- Environment & Secrets ---
+.env
+*.env.local
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.pytest_cache/
+htmlcov/
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# --- Database ---
+backend/instance/*.db
+backend/instance/*.db-wal
+backend/instance/*.db-shm
+*.sqlite
+*.sqlite3
+
+# --- Uploads ---
+backend/uploads/
+mcp_server/uploads/
+
+# --- Node / Frontend ---
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.cache/
+
+# --- Docker ---
+*.dockerignore
+
+# --- IDEs ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Logs ---
+*.log
+logs/

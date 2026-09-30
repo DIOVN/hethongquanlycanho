@@ -1,0 +1,128 @@
+services:
+  # ============================================================
+  # 1. NGINX - Reverse Proxy & Static File Server
+  # ============================================================
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: sams_nginx
+    ports:
+      - "${NGINX_HTTP_PORT:-80}:80"
+    volumes:
+      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      # Frontend build output mount (khi dev dùng volume từ frontend container)
+      - frontend_build:/usr/share/nginx/html:ro
+      # Shared uploads dir (đọc ảnh do backend lưu)
+      - uploads_data:/app/uploads:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - sams_internal
+
+  # ============================================================
+  # 2. BACKEND - Flask API Server
+  # ============================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sams_backend
+    env_file:
+      - .env
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+      - SQLITE_DB_PATH=/data/apartment.db
+      - UPLOAD_FOLDER=/app/uploads
+    volumes:
+      # SQLite database persistent storage
+      - db_data:/data
+      # Upload images persistent storage
+      - uploads_data:/app/uploads
+      # Dev mode: mount source code để hot reload
+      # (Comment ra khi production)
+      # - ./backend:/app:delegated
+    ports:
+      - "${BACKEND_PORT:-5000}:5000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - sams_internal
+
+  # ============================================================
+  # 3. FRONTEND - React/Vite Development Server
+  # ============================================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: development  # multi-stage: development | production
+    container_name: sams_frontend
+    env_file:
+      - .env
+    environment:
+      - VITE_API_BASE_URL=http://localhost:${NGINX_HTTP_PORT:-80}/api/v1
+    volumes:
+      - ./frontend/src:/app/src:delegated
+      - ./frontend/public:/app/public:delegated
+      - frontend_build:/app/dist
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - sams_internal
+
+  # ============================================================
+  # 4. FASTMCP - AI Tools Server (Claude Desktop Integration)
+  # ============================================================
+  mcp_server:
+    build:
+      context: ./mcp_server
+      dockerfile: Dockerfile
+    container_name: sams_mcp
+    env_file:
+      - .env
+    environment:
+      - SQLITE_DB_PATH=/data/apartment.db
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - MCP_PORT=${MCP_PORT:-8080}
+    volumes:
+      # Đọc cùng SQLite database với backend (READ-ONLY để an toàn)
+      - db_data:/data:ro
+    ports:
+      - "${MCP_PORT:-8080}:8080"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - sams_internal
+
+# ============================================================
+# Volumes - Dữ liệu persistent
+# ============================================================
+volumes:
+  db_data:
+    driver: local
+    name: sams_db_data
+  uploads_data:
+    driver: local
+    name: sams_uploads_data
+  frontend_build:
+    driver: local
+    name: sams_frontend_build
+
+# ============================================================
+# Networks - Mạng nội bộ cô lập
+# ============================================================
+networks:
+  sams_internal:
+    driver: bridge
+    name: sams_network
