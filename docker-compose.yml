@@ -6,7 +6,7 @@ services:
     image: nginx:1.27-alpine
     container_name: sams_nginx
     ports:
-      - "${NGINX_HTTP_PORT:-80}:80"
+      - "${NGINX_HTTP_PORT:-8088}:80"
     volumes:
       - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       # Frontend build output mount (khi dev dùng volume từ frontend container)
@@ -66,7 +66,7 @@ services:
     env_file:
       - .env
     environment:
-      - VITE_API_BASE_URL=http://localhost:${NGINX_HTTP_PORT:-80}/api/v1
+      - VITE_API_BASE_URL=http://localhost:${BACKEND_PORT:-5000}/api/v1
     volumes:
       - ./frontend/src:/app/src:delegated
       - ./frontend/public:/app/public:delegated
