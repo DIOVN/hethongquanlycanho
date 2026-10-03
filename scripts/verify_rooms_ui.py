@@ -7,7 +7,7 @@ import shutil
 from playwright.sync_api import sync_playwright
 
 BASE_URL = "http://localhost:3000"
-ARTIFACTS_DIR = r"C:\Users\kaedee206\.gemini\antigravity-ide\brain\2d4d7205-da90-42d3-8ec4-abf2fa177e27"
+ARTIFACTS_DIR = None
 SCREENSHOTS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "playwright_screenshots"))
 
 def verify_rooms():

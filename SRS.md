@@ -793,7 +793,7 @@ def get_contract_expiration_forecast(params: ExpirationForecastInput) -> list:
 
 ## 9. BỘ QUY TẮC THIẾT KẾ CHỐNG "AI SLOP" & TIÊU CHUẨN TAILWIND DESIGN SYSTEM
 
-Tài liệu quy tắc riêng biệt tham chiếu tại: [anti_ai_slop_design_rules.md](file:///c:/Users/kaedee206/Documents/hethongquanlycanho/.agents/rules/anti_ai_slop_design_rules.md).  
+Tài liệu quy tắc riêng biệt tham chiếu tại: [anti_ai_slop_design_rules.md](.agents/rules/anti_ai_slop_design_rules.md).  
 Nhằm đảm bảo giao diện đạt đẳng cấp thương mại cao, mọi AI và lập trình viên phải tuân thủ nghiêm ngặt 7 điều răn sau:
 
 1. **CẤM GRADIENT TÍM/HỒNG NEON VÔ NGHĨA:**

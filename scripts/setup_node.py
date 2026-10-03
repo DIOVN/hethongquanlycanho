@@ -4,7 +4,7 @@ import urllib.request
 import zipfile
 import shutil
 
-tools_dir = r"C:\Users\kaedee206\tools"
+tools_dir = os.path.join(os.path.expanduser("~"), "tools")
 node_dir = os.path.join(tools_dir, "nodejs")
 node_exe = os.path.join(node_dir, "node.exe")
 

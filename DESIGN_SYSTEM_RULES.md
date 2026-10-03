@@ -2,9 +2,8 @@
 Tài liệu quy định các tiêu chuẩn thiết kế và lập trình giao diện React + Tailwind CSS cho dự án SAMS.
 
 Chi tiết xem tại:
-- File luật tự động nạp cho AI: [.agents/rules/anti_ai_slop_design_rules.md](file:///c:/Users/kaedee206/Documents/hethongquanlycanho/.agents/rules/anti_ai_slop_design_rules.md)
-- Đặc tả yêu cầu phần mềm: [SRS.md (Mục 9)](file:///c:/Users/kaedee206/Documents/hethongquanlycanho/SRS.md)
-- Kế hoạch triển khai: [implementation_plan.md](file:///C:/Users/kaedee206/.gemini/antigravity-ide/brain/bf91d6c9-c4dc-46a1-adaf-c7431354d556/implementation_plan.md)
+- File luật tự động nạp cho AI: [.agents/rules/anti_ai_slop_design_rules.md](.agents/rules/anti_ai_slop_design_rules.md)
+- Đặc tả yêu cầu phần mềm: [SRS.md (Mục 9)](SRS.md)
 
 ### 7 ĐIỀU RĂN CHỐNG AI SLOP:
 1. **Cấm Gradient tím/hồng neon vô nghĩa:** 100% sử dụng HSL Semantic Tokens (`bg-background`, `text-foreground`, `bg-card`, `border-border`, `bg-primary`, `bg-muted`). Bảng màu chủ đạo: Slate & Deep Indigo. Hỗ trợ Dark/Light mode tự nhiên.
