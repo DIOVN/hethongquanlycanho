@@ -4,7 +4,7 @@ SAMS - Verify Rooms Page Rendering with Playwright
 import os
 import time
 import shutil
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright  # type: ignore
 
 BASE_URL = "http://localhost:3000"
 ARTIFACTS_DIR = None

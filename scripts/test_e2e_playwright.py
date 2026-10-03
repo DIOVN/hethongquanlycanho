@@ -6,7 +6,7 @@ Tickets, Violations và Net Profit Reports.
 import sys
 import os
 import time
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright  # type: ignore
 
 BASE_URL = "http://localhost:3000"
 SCREENSHOTS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "playwright_screenshots"))

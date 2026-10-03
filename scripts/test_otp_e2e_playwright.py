@@ -6,7 +6,7 @@ import sys
 import time
 import shutil
 import sqlite3
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright  # type: ignore
 
 BASE_URL = "http://localhost:3000"
 DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "backend", "instance", "apartment.db"))
